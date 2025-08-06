@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tienda - Productos</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            color: black;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.2rem;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 30px;
+            padding: 20px 0;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            width: 350px;
+            height: 470px;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 250px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.1);
+        }
+
+        .product-info {
+            padding: 25px;
+        }
+
+        .product-name {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            line-height: 1.4;
+        }
+
+        .product-price {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .price-original {
+            font-size: 1.2rem;
+            color: #999;
+            text-decoration: line-through;
+        }
+
+        .discount-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #ff4757;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+        }
+
+        .add-to-cart {
+            width: 90%;
+            background: linear-gradient(135deg, #ea6689, #a24b4b);
+            color: white;
+            border: none;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-top: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .add-to-cart:hover {
+            box-shadow: 0 5px 15px rgba(234, 102, 102, 0.4);
+        }
+
+        .img-1 { background: linear-gradient(135deg, #ff6b6b, #ee5a52); }
+        .img-2 { background: linear-gradient(135deg, #4ecdc4, #44a08d); }
+        .img-3 { background: linear-gradient(135deg, #45b7d1, #96c93d); }
+        .img-4 { background: linear-gradient(135deg, #f093fb, #f5576c); }
+        .img-5 { background: linear-gradient(135deg, #4facfe, #00f2fe); }
+        .img-6 { background: linear-gradient(135deg, #ffecd2, #fcb69f); }
+        .img-7 { background: linear-gradient(135deg, #a8edea, #fed6e3); }
+        .img-8 { background: linear-gradient(135deg, #ff9a9e, #fecfef); }
+        .img-9 { background: linear-gradient(135deg, #667eea, #764ba2); }
+
+        .placeholder-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            font-weight: bold;
+            text-align: center;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .products-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .header p {
+                font-size: 1rem;
+            }
+
+            .container {
+                padding: 0 10px;
+            }
+
+            body {
+                padding: 10px;
+            }
+
+            .product-card {
+                max-width: 400px;
+                margin: 0 auto;
+            }
+
+            .product-image {
+                height: 200px;
+            }
+
+            .product-info {
+                padding: 20px;
+            }
+
+            .product-name {
+                font-size: 1.2rem;
+            }
+
+            .product-price {
+                font-size: 1.6rem;
+            }
+        }
+
+        /* Animación al cargar */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .product-card {
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .product-card:nth-child(1) { animation-delay: 0.1s; }
+        .product-card:nth-child(2) { animation-delay: 0.2s; }
+        .product-card:nth-child(3) { animation-delay: 0.3s; }
+        .product-card:nth-child(4) { animation-delay: 0.4s; }
+        .product-card:nth-child(5) { animation-delay: 0.5s; }
+        .product-card:nth-child(6) { animation-delay: 0.6s; }
+        .product-card:nth-child(7) { animation-delay: 0.7s; }
+        .product-card:nth-child(8) { animation-delay: 0.8s; }
+        .product-card:nth-child(9) { animation-delay: 0.9s; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>Nuestra Tienda</h1>
+        <p>Descubre los mejores productos con ofertas increíbles</p>
+    </div>
+
+    <div class="products-grid">
+        <!-- Producto 1 -->
+        <div class="product-card">
+            <div class="product-image">
+                <div class="img-1 placeholder-content">
+                    📱<br>Smartphone
+                </div>
+                <div class="discount-badge">-25%</div>
+            </div>
+            <div class="product-info">
+                <h3 class="product-name">iPhone 15 Pro Max 256GB</h3>
+                <div class="product-price">
+                    Q. 899.99
+                    <span class="price-original">Q. 1,199.99</span>
+                </div>
+                <button class="add-to-cart">Agregar al Carrito</button>
+            </div>
+        </div>
+
+        <!-- Producto 2 -->
+        <div class="product-card">
+            <div class="product-image">
+                <div class="img-2 placeholder-content">
+                    💻<br>Laptop Gaming
+                </div>
+                <div class="discount-badge">-15%</div>
+            </div>
+            <div class="product-info">
+                <h3 class="product-name">Laptop Gaming ROG Strix G15</h3>
+                <div class="product-price">
+                    Q. 1,299.99
+                    <span class="price-original">Q. 1,529.99</span>
+                </div>
+                <button class="add-to-cart">Agregar al Carrito</button>
+            </div>
+        </div>
+
+        <!-- Producto 3 -->
+        <div class="product-card">
+            <div class="product-image">
+                <div class="img-3 placeholder-content">
+                    🎧<br>Auriculares
+                </div>
+            </div>
+            <div class="product-info">
+                <h3 class="product-name">AirPods Pro 2da Generación</h3>
+                <div class="product-price">Q. 249.99</div>
+                <button class="add-to-cart">Agregar al Carrito</button>
+            </div>
+        </div>
+
+        <!-- Producto 4 -->
+        <div class="product-card">
+            <div class="product-image">
+                <div class="img-4 placeholder-content">
+                    ⌚<br>Smartwatch
+                </div>
+                <div class="discount-badge">-30%</div>
+            </div>
+            <div class="product-info">
+                <h3 class="product-name">Apple Watch Series 9 45mm</h3>
+                <div class="product-price">
+                    Q. 279.99
+                    <span class="price-original">Q. 399.99</span>
+                </div>
+                <button class="add-to-cart">Agregar al Carrito</button>
+            </div>
+        </div>
+
+        <!-- Producto 5 -->
+        <div class="product-card">
+            <div class="product-image">
+                <div class="img-5 placeholder-content">
+                    📷<br>Cámara
+                </div>
+            </div>
+            <div class="product-info">
+                <h3 class="product-name">Canon EOS R6 Mark II</h3>
+                <div class="product-price">Q. 2,499.99</div>
+                <button class="add-to-cart">Agregar al Carrito</button>
+            </div>
+        </div>
+
+        <!-- Producto 6 -->
+        <div class="product-card">
+            <div class="product-image">
+                <div class="img-6 placeholder-content">
+                    🖥️<br>Monitor 4K
+                </div>
+                <div class="discount-badge">-20%</div>
+            </div>
+            <div class="product-info">
+                <h3 class="product-name">Monitor 4K UltraWide 34"</h3>
+                <div class="product-price">
+                    Q. 599.99
+                    <span class="price-original">Q. 749.99</span>
+                </div>
+                <button class="add-to-cart">Agregar al Carrito</button>
+            </div>
+        </div>
+
+        <!-- Producto 7 -->
+        <div class="product-card">
+            <div class="product-image">
+                <div class="img-7 placeholder-content">
+                    🖱️<br>Mouse Gaming
+                </div>
+            </div>
+            <div class="product-info">
+                <h3 class="product-name">Logitech G Pro X Superlight</h3>
+                <div class="product-price">Q. 149.99</div>
+                <button class="add-to-cart">Agregar al Carrito</button>
+            </div>
+        </div>
+
+        <!-- Producto 8 -->
+        <div class="product-card">
+            <div class="product-image">
+                <div class="img-8 placeholder-content">
+                    ⌨️<br>Teclado
+                </div>
+                <div class="discount-badge">-10%</div>
+            </div>
+            <div class="product-info">
+                <h3 class="product-name">Teclado Mecánico RGB</h3>
+                <div class="product-price">
+                    Q. 179.99
+                    <span class="price-original">Q. 199.99</span>
+                </div>
+                <button class="add-to-cart">Agregar al Carrito</button>
+            </div>
+        </div>
+
+        <!-- Producto 9 -->
+        <div class="product-card">
+            <div class="product-image">
+                <div class="img-9 placeholder-content">
+                    🔌<br>Cargador
+                </div>
+            </div>
+            <div class="product-info">
+                <h3 class="product-name">Cargador Inalámbrico MagSafe</h3>
+                <div class="product-price">Q. 39.99</div>
+                <button class="add-to-cart">Agregar al Carrito</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

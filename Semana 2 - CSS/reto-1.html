@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RETO 1</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #0f0f0f;
+            color: #fff;
+            display: flex;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            background-color: #0f0f0f;
+            padding: 12px 0;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            border-right: 1px solid #3f3f3f;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 24px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-size: 14px;
+        }
+
+        .sidebar-item:hover {
+            background-color: #272727;
+        }
+
+        .sidebar-item.active {
+            background-color: #272727;
+        }
+
+        .sidebar-icon {
+            width: 24px;
+            height: 24px;
+            margin-right: 24px;
+            fill: #fff;
+        }
+
+        .sidebar-divider {
+            border-bottom: 1px solid #3f3f3f;
+            margin: 12px 0;
+        }
+
+        .sidebar-section-title {
+            padding: 8px 24px;
+            font-size: 16px;
+            font-weight: 500;
+            color: #fff;
+            margin-top: 16px;
+        }
+
+        .subscription-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 24px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-size: 14px;
+        }
+
+        .subscription-item:hover {
+            background-color: #272727;
+        }
+
+        .channel-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            margin-right: 24px;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+        }
+
+        .live-indicator {
+            width: 8px;
+            height: 8px;
+            background-color: #ff0000;
+            border-radius: 50%;
+            margin-left: auto;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 240px;
+            padding: 20px 24px;
+            flex: 1;
+        }
+
+        /* Video Grid */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            max-width: 80vw;
+        }
+
+        .video-card {
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .video-card:hover {
+            transform: translateY(-2px);
+        }
+
+        .video-thumbnail {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16/9;
+            background-color: #272727;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .video-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-duration {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .video-info {
+            display: flex;
+            gap: 12px;
+        }
+
+        .video-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            flex-shrink: 0;
+        }
+
+        .video-details {
+            flex: 1;
+        }
+
+        .video-title {
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 1.4;
+            margin-bottom: 4px;
+            color: #fff;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .video-meta {
+            font-size: 14px;
+            color: #aaa;
+            line-height: 1.4;
+        }
+
+        .channel-name {
+            color: #aaa;
+            margin-bottom: 2px;
+        }
+
+        .video-stats {
+            color: #aaa;
+        }
+
+        .thumb-1 { background: linear-gradient(45deg, #ff6b6b, #ee5a52); }
+        .thumb-2 { background: linear-gradient(45deg, #4ecdc4, #44a08d); }
+        .thumb-3 { background: linear-gradient(45deg, #45b7d1, #96c93d); }
+        .thumb-4 { background: linear-gradient(45deg, #f093fb, #f5576c); }
+        .thumb-5 { background: linear-gradient(45deg, #4facfe, #00f2fe); }
+        .thumb-6 { background: linear-gradient(45deg, #ffecd2, #fcb69f); }
+    </style>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-item active">
+            <svg class="sidebar-icon" viewBox="0 0 24 24">
+                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+            </svg>
+            Inicio
+        </div>
+        
+        <div class="sidebar-item">
+            <svg class="sidebar-icon" viewBox="0 0 24 24">
+                <path d="M12 6c3.79 0 7.17 2.13 8.82 5.5C19.17 14.87 15.79 17 12 17s-7.17-2.13-8.82-5.5C4.83 8.13 8.21 6 12 6m0-2C7 4 2.73 7.11 1 11.5 2.73 15.89 7 19 12 19s9.27-3.11 11-7.5C21.27 7.11 17 4 12 4z"/>
+                <circle cx="12" cy="11.5" r="2.5"/>
+            </svg>
+            Shorts
+        </div>
+
+        <div class="sidebar-item">
+            <svg class="sidebar-icon" viewBox="0 0 24 24">
+                <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 14H4V6h16v12z"/>
+            </svg>
+            Suscripciones
+        </div>
+
+        <div class="sidebar-divider"></div>
+
+        <div class="sidebar-item">
+            <svg class="sidebar-icon" viewBox="0 0 24 24">
+                <path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/>
+            </svg>
+            Mi biblioteca
+        </div>
+
+        <div class="sidebar-item">
+            <svg class="sidebar-icon" viewBox="0 0 24 24">
+                <path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9z"/>
+            </svg>
+            Historial
+        </div>
+
+        <div class="sidebar-item">
+            <svg class="sidebar-icon" viewBox="0 0 24 24">
+                <path d="M14.4 6L14 4H5v17h2v-7h5.6l.4 2h7V6z"/>
+            </svg>
+            Mis videos
+        </div>
+
+        <div class="sidebar-item">
+            <svg class="sidebar-icon" viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z"/>
+            </svg>
+            Ver más tarde
+        </div>
+
+        <div class="sidebar-divider"></div>
+
+        <div class="sidebar-section-title">Suscripciones</div>
+        
+        <div class="subscription-item">
+            <div class="channel-avatar"></div>
+            Canal 1
+            <div class="live-indicator"></div>
+        </div>
+        
+        <div class="subscription-item">
+            <div class="channel-avatar" style="background: linear-gradient(45deg, #667eea, #764ba2);"></div>
+            Canal 2
+        </div>
+        
+        <div class="subscription-item">
+            <div class="channel-avatar" style="background: linear-gradient(45deg, #f093fb, #f5576c);"></div>
+            Canal 3
+            <div class="live-indicator"></div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="video-grid">
+            <!-- Video 1 -->
+            <div class="video-card">
+                <div class="video-thumbnail">
+                    <div class="thumb-1" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold;"></div>
+                    <div class="video-duration">15:30</div>
+                </div>
+                <div class="video-info">
+                    <div class="video-avatar"></div>
+                    <div class="video-details">
+                        <div class="video-title">Video 1</div>
+                        <div class="video-meta">
+                            <div class="channel-name">Canal 1</div>
+                            <div class="video-stats">233 visualizaciones • hace 5 meses</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video 2 -->
+            <div class="video-card">
+                <div class="video-thumbnail">
+                    <div class="thumb-2" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: bold; text-align: center;"></div>
+                    <div class="video-duration">10:45</div>
+                </div>
+                <div class="video-info">
+                    <div class="video-avatar" style="background: linear-gradient(45deg, #4ecdc4, #44a08d);"></div>
+                    <div class="video-details">
+                        <div class="video-title">Video 2</div>
+                        <div class="video-meta">
+                            <div class="channel-name">Canal 2</div>
+                            <div class="video-stats">1.2 K visualizaciones • hace 3 semanas</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video 3 -->
+            <div class="video-card">
+                <div class="video-thumbnail">
+                    <div class="thumb-3" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: bold; text-align: center;"></div>
+                    <div class="video-duration">12:34</div>
+                </div>
+                <div class="video-info">
+                    <div class="video-avatar" style="background: linear-gradient(45deg, #45b7d1, #96c93d);"></div>
+                    <div class="video-details">
+                        <div class="video-title">Video 3</div>
+                        <div class="video-meta">
+                            <div class="channel-name">Canal 3</div>
+                            <div class="video-stats">500 K visualizaciones • hace 1 mes</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video 4 -->
+            <div class="video-card">
+                <div class="video-thumbnail">
+                    <div class="thumb-4" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold; text-align: center;"></div>
+                    <div class="video-duration">9:20</div>
+                </div>
+                <div class="video-info">
+                    <div class="video-avatar" style="background: linear-gradient(45deg, #f093fb, #f5576c);"></div>
+                    <div class="video-details">
+                        <div class="video-title">Video 4</div>
+                        <div class="video-meta">
+                            <div class="channel-name">Canal 4</div>
+                            <div class="video-stats">1.5 M visualizaciones • hace 2 meses</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video 5 -->
+            <div class="video-card">
+                <div class="video-thumbnail">
+                    <div class="thumb-5" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold; text-align: center;"></div>
+                    <div class="video-duration">20:45</div>
+                </div>
+                <div class="video-info">
+                    <div class="video-avatar" style="background: linear-gradient(45deg, #4facfe, #00f2fe);"></div>
+                    <div class="video-details">
+                        <div class="video-title">Video 5</div>
+                        <div class="video-meta">
+                            <div class="channel-name">Canal 5</div>
+                            <div class="video-stats">800 K visualizaciones • hace 2 semanas</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Video 6 -->
+            <div class="video-card">
+                <div class="video-thumbnail">
+                    <div class="thumb-6" style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: bold; text-align: center;"></div>
+                    <div class="video-duration">8:15</div>
+                </div>
+                <div class="video-info">
+                    <div class="video-avatar" style="background: linear-gradient(45deg, #ffecd2, #fcb69f);"></div>
+                    <div class="video-details">
+                        <div class="video-title">Video 6</div>
+                        <div class="video-meta">
+                            <div class="channel-name">Canal 6</div>
+                            <div class="video-stats">300 K visualizaciones • hace 1 semana</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
